@@ -298,70 +298,73 @@ class SettingsScreen extends StatelessWidget {
                 width: 1,
               ),
             ),
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  Icons.delete_sweep_outlined,
-                  size: 20,
-                  color: Colors.red.shade400,
-                ),
-              ),
-              title: Text(
-                AppStrings.settingsClearData,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.red.shade400,
-                ),
-              ),
-              subtitle: const Text(
-                'Erase all reflections and reset mood records',
-                style: TextStyle(fontSize: 12),
-              ),
-              onTap: () async {
-                final confirmed = await showDialog<bool>(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: const Text('Reset All Reflections?'),
-                    content: const Text(AppStrings.settingsClearConfirm),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text('Cancel'),
-                      ),
-                      FilledButton(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: Colors.red.shade400,
-                        ),
-                        onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('Reset Everything'),
-                      ),
-                    ],
+            child: Material(
+              color: Colors.transparent,
+              child: ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                );
-
-                if (confirmed == true && context.mounted) {
-                  final success = await journalProvider.clearAllEntries();
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          success
-                              ? 'All reflections have been cleared.'
-                              : 'Failed to reset data.',
+                  child: Icon(
+                    Icons.delete_sweep_outlined,
+                    size: 20,
+                    color: Colors.red.shade400,
+                  ),
+                ),
+                title: Text(
+                  AppStrings.settingsClearData,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.red.shade400,
+                  ),
+                ),
+                subtitle: const Text(
+                  'Erase all reflections and reset mood records',
+                  style: TextStyle(fontSize: 12),
+                ),
+                onTap: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Reset All Reflections?'),
+                      content: const Text(AppStrings.settingsClearConfirm),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: const Text('Cancel'),
                         ),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.red.shade400,
+                          ),
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: const Text('Reset Everything'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirmed == true && context.mounted) {
+                    final success = await journalProvider.clearAllEntries();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            success
+                                ? 'All reflections have been cleared.'
+                                : 'Failed to reset data.',
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
                   }
-                }
-              },
+                },
+              ),
             ),
           ),
         ],

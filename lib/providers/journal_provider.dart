@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../core/utils/date_formatter.dart';
 import '../models/journal_entry.dart';
 import '../models/mood_stats.dart';
@@ -118,8 +117,8 @@ class JournalProvider extends ChangeNotifier {
   }
 
   /// Fetches all journal entries directly from SQLite database.
-  /// Only seeds starter entries once on very first launch.
-  Future<void> loadEntries({bool seedIfFirstLaunch = true}) async {
+  /// Empty accounts remain empty until the user creates a reflection.
+  Future<void> loadEntries({bool seedIfFirstLaunch = false}) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -129,53 +128,12 @@ class JournalProvider extends ChangeNotifier {
       // Ensure strict descending chronological order (newest first)
       _entries.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-      if (_entries.isEmpty && seedIfFirstLaunch) {
-        final prefs = await SharedPreferences.getInstance();
-        final hasSeeded = prefs.getBool('moodora_db_has_seeded') ?? false;
-        if (!hasSeeded) {
-          await _seedInitialEntries();
-          await prefs.setBool('moodora_db_has_seeded', true);
-          _entries = await _journalService.getAllEntries();
-          _entries.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        }
-      }
       _recalculateStats();
     } catch (e) {
       _errorMessage = 'Failed to load entries: $e';
     } finally {
       _isLoading = false;
       notifyListeners();
-    }
-  }
-
-  /// Seeds aesthetic starter entries to showcase interface capabilities upon first launch.
-  Future<void> _seedInitialEntries() async {
-    try {
-      await _journalService.createEntry(
-        title: 'Morning sunlight & fresh brew',
-        content:
-            'Started the morning sitting quietly on the balcony watching soft clouds float by. The quietness before the day begins is truly magical.',
-        mood: MoodType.happy,
-        tags: ['Morning', 'Mindfulness', 'Coffee'],
-      );
-
-      await _journalService.createEntry(
-        title: 'Shipped design system & core features',
-        content:
-            'Deep focus session without checking notifications. Shipped the new release on time and aligned with all requirements.',
-        mood: MoodType.productive,
-        tags: ['Productivity', 'Focus', 'Work'],
-      );
-
-      await _journalService.createEntry(
-        title: 'Quiet evening stroll in the park',
-        content:
-            'Crisp air, quiet footsteps, and peaceful thoughts. Grounded and balanced after a busy week.',
-        mood: MoodType.neutral,
-        tags: ['Nature', 'Walking', 'Peace'],
-      );
-    } catch (_) {
-      // Non-critical seed failure
     }
   }
 
