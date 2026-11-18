@@ -4,10 +4,10 @@
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.24+-02569B?style=flat&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.5+-0175C2?style=flat&logo=dart&logoColor=white)](https://dart.dev)
-[![Platform](https://img.shields.io/badge/Platforms-Android%20%7C%20Web-blue?style=flat)](https://flutter.dev/multi-platform)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platforms-Android%20%7C%20Web-red?style=flat)](https://flutter.dev/multi-platform)
+[![License](https://img.shields.io/badge/License-MIT-pink.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-38%20Passing-brightgreen.svg)]()
-[![Analysis](https://img.shields.io/badge/Analysis-0%20Issues-brightgreen.svg)]()
+[![Analysis](https://img.shields.io/badge/Analysis-0%20Issues-yellow.svg)]()
 
 ---
 
