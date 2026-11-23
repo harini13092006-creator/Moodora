@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../core/utils/date_formatter.dart';
 import '../models/journal_entry.dart';
 import '../models/mood_stats.dart';
@@ -9,7 +10,7 @@ import '../services/journal_service.dart';
 /// and refreshed directly from database queries.
 class JournalProvider extends ChangeNotifier {
   JournalProvider({JournalService? journalService})
-      : _journalService = journalService ?? JournalService();
+    : _journalService = journalService ?? JournalService();
 
   final JournalService _journalService;
 
@@ -67,17 +68,17 @@ class JournalProvider extends ChangeNotifier {
 
   /// Map-based summary for dashboard and analytical widgets
   Map<String, dynamic> get statistics => {
-        'totalCount': _moodStats.totalEntries,
-        'happyCount': _moodStats.happyCount,
-        'neutralCount': _moodStats.neutralCount,
-        'productiveCount': _moodStats.productiveCount,
-        'dominantMood': _moodStats.mostFrequentMood?.name,
-        'distribution': {
-          MoodType.happy.name: _moodStats.happyCount,
-          MoodType.neutral.name: _moodStats.neutralCount,
-          MoodType.productive.name: _moodStats.productiveCount,
-        },
-      };
+    'totalCount': _moodStats.totalEntries,
+    'happyCount': _moodStats.happyCount,
+    'neutralCount': _moodStats.neutralCount,
+    'productiveCount': _moodStats.productiveCount,
+    'dominantMood': _moodStats.mostFrequentMood?.name,
+    'distribution': {
+      MoodType.happy.name: _moodStats.happyCount,
+      MoodType.neutral.name: _moodStats.neutralCount,
+      MoodType.productive.name: _moodStats.productiveCount,
+    },
+  };
 
   /// Returns filtered entries based on search text (title & content), active mood, and date filters.
   /// Dynamically combines search and date filters with case-insensitive matching.
@@ -90,12 +91,14 @@ class JournalProvider extends ChangeNotifier {
       // 2. Date filter (supports specific date or start/end date range)
       bool matchesDate = true;
       if (_startDateFilter != null && _endDateFilter != null) {
-        matchesDate = (entry.createdAt.isAfter(_startDateFilter!) ||
+        matchesDate =
+            (entry.createdAt.isAfter(_startDateFilter!) ||
                 entry.createdAt.isAtSameMomentAs(_startDateFilter!)) &&
             (entry.createdAt.isBefore(_endDateFilter!) ||
                 entry.createdAt.isAtSameMomentAs(_endDateFilter!));
       } else if (_selectedDateFilter != null) {
-        matchesDate = entry.createdAt.year == _selectedDateFilter!.year &&
+        matchesDate =
+            entry.createdAt.year == _selectedDateFilter!.year &&
             entry.createdAt.month == _selectedDateFilter!.month &&
             entry.createdAt.day == _selectedDateFilter!.day;
       }
@@ -167,6 +170,55 @@ class JournalProvider extends ChangeNotifier {
     }
   }
 
+  /// Adds editable example reflections to SQLite so new users can explore the
+  /// mood chart and recent entries before writing their own reflections.
+  Future<bool> addSampleReflections() async {
+    if (_entries.isNotEmpty) return false;
+
+    final now = DateTime.now();
+    final examples = [
+      (
+        title: 'Sample: A gentle morning',
+        content: 'I made time for a slow breakfast and noticed how much calmer the day felt when I began without rushing.',
+        mood: MoodType.happy,
+        timestamp: now.subtract(const Duration(days: 2)),
+      ),
+      (
+        title: 'Sample: Finding a steady rhythm',
+        content: 'Today felt balanced. I handled what needed attention and gave myself space to rest between tasks.',
+        mood: MoodType.neutral,
+        timestamp: now.subtract(const Duration(days: 1)),
+      ),
+      (
+        title: 'Sample: Small wins add up',
+        content: 'I focused on one thing at a time and finished a task I had been putting off. Progress feels good.',
+        mood: MoodType.productive,
+        timestamp: now,
+      ),
+    ];
+
+    try {
+      for (final example in examples) {
+        await _journalService.createEntry(
+          title: example.title,
+          content: example.content,
+          mood: example.mood,
+          timestamp: example.timestamp,
+        );
+      }
+
+      _entries = await _journalService.getAllEntries();
+      _entries.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      _recalculateStats();
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = 'Failed to add sample reflections: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+
   /// Updates an existing entry in SQLite and reloads state from SQLite.
   Future<bool> updateEntry(JournalEntry entry) async {
     try {
@@ -235,8 +287,15 @@ class JournalProvider extends ChangeNotifier {
     _selectedDateFilter = date;
     if (date != null) {
       _startDateFilter = DateTime(date.year, date.month, date.day, 0, 0, 0);
-      _endDateFilter =
-          DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
+      _endDateFilter = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        23,
+        59,
+        59,
+        999,
+      );
     } else {
       _startDateFilter = null;
       _endDateFilter = null;
@@ -247,10 +306,8 @@ class JournalProvider extends ChangeNotifier {
   /// Sets a date range filter between [start] and [end] (inclusive).
   void setDateRangeFilter(DateTime? start, DateTime? end) {
     if (start != null && end != null) {
-      _startDateFilter =
-          DateTime(start.year, start.month, start.day, 0, 0, 0);
-      _endDateFilter =
-          DateTime(end.year, end.month, end.day, 23, 59, 59, 999);
+      _startDateFilter = DateTime(start.year, start.month, start.day, 0, 0, 0);
+      _endDateFilter = DateTime(end.year, end.month, end.day, 23, 59, 59, 999);
       _selectedDateFilter = null; // Multi-day range
     } else {
       _startDateFilter = null;

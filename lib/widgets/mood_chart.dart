@@ -9,9 +9,14 @@ import 'mood_illustration.dart';
 /// Reusable mood distribution chart using fl_chart.
 /// Visualizes actual calculated statistics across Happy, Neutral, and Productive moods.
 class MoodDistributionChart extends StatefulWidget {
-  const MoodDistributionChart({super.key, required this.stats});
+  const MoodDistributionChart({
+    super.key,
+    required this.stats,
+    this.onLoadExamples,
+  });
 
   final MoodStats stats;
+  final Future<bool> Function()? onLoadExamples;
 
   @override
   State<MoodDistributionChart> createState() => _MoodDistributionChartState();
@@ -19,6 +24,28 @@ class MoodDistributionChart extends StatefulWidget {
 
 class _MoodDistributionChartState extends State<MoodDistributionChart> {
   int _touchedIndex = -1;
+  bool _isLoadingExamples = false;
+
+  Future<void> _loadExamples() async {
+    final loadExamples = widget.onLoadExamples;
+    if (loadExamples == null || _isLoadingExamples) return;
+
+    setState(() => _isLoadingExamples = true);
+    final added = await loadExamples();
+    if (!mounted) return;
+    setState(() => _isLoadingExamples = false);
+
+    if (added) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Sample reflections added. You can edit or delete them.',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +104,24 @@ class _MoodDistributionChartState extends State<MoodDistributionChart> {
                     : AppColors.textSecondary,
               ),
             ),
+            if (widget.onLoadExamples != null) ...[
+              const SizedBox(height: 14),
+              OutlinedButton.icon(
+                onPressed: _isLoadingExamples ? null : _loadExamples,
+                icon: _isLoadingExamples
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.auto_awesome_rounded, size: 17),
+                label: Text(
+                  _isLoadingExamples
+                      ? 'Adding examples…'
+                      : 'Explore with sample reflections',
+                ),
+              ),
+            ],
           ],
         ),
       );

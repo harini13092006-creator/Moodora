@@ -269,7 +269,12 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        MoodDistributionChart(stats: provider.moodStats),
+                        MoodDistributionChart(
+                          stats: provider.moodStats,
+                          onLoadExamples: provider.isLoading
+                              ? null
+                              : provider.addSampleReflections,
+                        ),
                       ],
                     ),
                   ),
