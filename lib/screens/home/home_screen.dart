@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/utils/date_formatter.dart';
@@ -13,10 +14,7 @@ import '../entry_details/entry_details_screen.dart';
 
 /// Minimal, aesthetic home dashboard screen featuring daily prompts, mood overview, and recent entries.
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({
-    super.key,
-    this.onNavigateToJournal,
-  });
+  const HomeScreen({super.key, this.onNavigateToJournal});
 
   final VoidCallback? onNavigateToJournal;
 
@@ -72,13 +70,10 @@ class HomeScreen extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               _getGreeting(),
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.w700,
+                              style: theme.textTheme.headlineMedium?.copyWith(
                                 color: isDark
                                     ? AppColors.darkTextMain
                                     : AppColors.textMain,
-                                letterSpacing: -0.6,
                               ),
                             ),
                           ],
@@ -98,7 +93,11 @@ class HomeScreen extends StatelessWidget {
                                 : AppColors.border,
                           ),
                         ),
-                        child: const Text('🌸', style: TextStyle(fontSize: 20)),
+                        child: const Icon(
+                          Icons.auto_awesome_rounded,
+                          color: AppColors.primary,
+                          size: 20,
+                        ),
                       ),
                     ],
                   ),
@@ -108,14 +107,10 @@ class HomeScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20.0),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkSurface
-                          : AppColors.surface,
+                      color: isDark ? AppColors.darkSurface : AppColors.surface,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: isDark
-                            ? AppColors.darkBorder
-                            : AppColors.border,
+                        color: isDark ? AppColors.darkBorder : AppColors.border,
                         width: 1,
                       ),
                       boxShadow: [
@@ -135,7 +130,9 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: isDark
                                     ? AppColors.darkSurfaceVariant

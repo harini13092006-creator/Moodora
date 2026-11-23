@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/utils/date_formatter.dart';
 import '../../models/journal_entry.dart';
 import '../../providers/journal_provider.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/mood_illustration.dart';
 import '../create_entry/create_entry_screen.dart';
 
 /// Screen displaying complete journal entry details:
@@ -16,14 +18,14 @@ import '../create_entry/create_entry_screen.dart';
 /// - Selected mood, emoji, and color
 /// - Interactive Edit and Delete actions connected directly to SQLite
 class EntryDetailsScreen extends StatelessWidget {
-  const EntryDetailsScreen({
-    super.key,
-    required this.entry,
-  });
+  const EntryDetailsScreen({super.key, required this.entry});
 
   final JournalEntry entry;
 
-  Future<void> _handleDelete(BuildContext context, JournalEntry targetEntry) async {
+  Future<void> _handleDelete(
+    BuildContext context,
+    JournalEntry targetEntry,
+  ) async {
     if (targetEntry.id == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cannot delete entry with missing ID.')),
@@ -52,9 +54,7 @@ class EntryDetailsScreen extends StatelessWidget {
             child: const Text('Cancel'),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.red.shade400,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade400),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Delete Permanently'),
           ),
@@ -72,8 +72,11 @@ class EntryDetailsScreen extends StatelessWidget {
             SnackBar(
               content: const Row(
                 children: [
-                  Icon(Icons.delete_outline_rounded,
-                      color: Colors.white, size: 20),
+                  Icon(
+                    Icons.delete_outline_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                   SizedBox(width: 10),
                   Text('Reflection permanently deleted.'),
                 ],
@@ -81,7 +84,8 @@ class EntryDetailsScreen extends StatelessWidget {
               backgroundColor: Colors.red.shade400,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14)),
+                borderRadius: BorderRadius.circular(14),
+              ),
               duration: const Duration(seconds: 2),
             ),
           );
@@ -89,8 +93,7 @@ class EntryDetailsScreen extends StatelessWidget {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content:
-                  Text('Failed to delete reflection. Please try again.'),
+              content: Text('Failed to delete reflection. Please try again.'),
             ),
           );
         }
@@ -120,12 +123,14 @@ class EntryDetailsScreen extends StatelessWidget {
         );
 
         final mood = currentEntry.mood;
-        final hasBeenEdited = currentEntry.updatedAt
-            .isAfter(currentEntry.createdAt.add(const Duration(seconds: 1)));
+        final hasBeenEdited = currentEntry.updatedAt.isAfter(
+          currentEntry.createdAt.add(const Duration(seconds: 1)),
+        );
 
         return Scaffold(
-          backgroundColor:
-              isDark ? AppColors.darkBackground : AppColors.background,
+          backgroundColor: isDark
+              ? AppColors.darkBackground
+              : AppColors.background,
           appBar: CustomAppBar(
             title: AppStrings.entryDetailsTitle,
             leading: IconButton(
@@ -165,8 +170,9 @@ class EntryDetailsScreen extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color:
-                            isDark ? Colors.transparent : AppColors.cardShadow,
+                        color: isDark
+                            ? Colors.transparent
+                            : AppColors.cardShadow,
                         blurRadius: 10,
                         offset: const Offset(0, 3),
                       ),
@@ -177,7 +183,9 @@ class EntryDetailsScreen extends StatelessWidget {
                       // Mood pill
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: isDark
                               ? mood.color.withAlpha(35)
@@ -191,8 +199,7 @@ class EntryDetailsScreen extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(mood.emoji,
-                                style: const TextStyle(fontSize: 20)),
+                            MoodIllustration(mood: mood, size: 32),
                             const SizedBox(width: 8),
                             Text(
                               mood.label,
@@ -210,7 +217,9 @@ class EntryDetailsScreen extends StatelessWidget {
                       // Mood Color Indicator badge
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 6),
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: isDark
                               ? AppColors.darkSurfaceVariant
@@ -320,8 +329,8 @@ class EntryDetailsScreen extends StatelessWidget {
                             color: hasBeenEdited
                                 ? AppColors.primary
                                 : (isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.textTertiary),
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.textTertiary),
                           ),
                           const SizedBox(width: 8),
                           Text(
@@ -332,8 +341,8 @@ class EntryDetailsScreen extends StatelessWidget {
                               color: hasBeenEdited
                                   ? AppColors.primary
                                   : (isDark
-                                      ? AppColors.darkTextSecondary
-                                      : AppColors.textSecondary),
+                                        ? AppColors.darkTextSecondary
+                                        : AppColors.textSecondary),
                             ),
                           ),
                           Expanded(
@@ -345,8 +354,8 @@ class EntryDetailsScreen extends StatelessWidget {
                                 color: hasBeenEdited
                                     ? AppColors.primary
                                     : (isDark
-                                        ? AppColors.darkTextMain
-                                        : AppColors.textMain),
+                                          ? AppColors.darkTextMain
+                                          : AppColors.textMain),
                               ),
                             ),
                           ),
@@ -364,8 +373,9 @@ class EntryDetailsScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
-                      color:
-                          isDark ? AppColors.darkTextMain : AppColors.textMain,
+                      color: isDark
+                          ? AppColors.darkTextMain
+                          : AppColors.textMain,
                       letterSpacing: -0.5,
                       height: 1.3,
                     ),
@@ -381,7 +391,9 @@ class EntryDetailsScreen extends StatelessWidget {
                     children: currentEntry.tags.map((tag) {
                       return Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: isDark
                               ? AppColors.darkSurfaceVariant

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../core/constants/app_colors.dart';
 import '../models/journal_entry.dart';
+import 'mood_illustration.dart';
 
 /// Reusable MoodSelector widget allowing users to select one mood category:
 /// - Happy 😊 (#FFD76A)
@@ -46,9 +48,20 @@ class MoodSelector extends StatelessWidget {
                     horizontal: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: isSelected
-                        ? (isDark ? mood.color.withAlpha(35) : mood.containerColor)
-                        : (isDark ? AppColors.darkSurface : AppColors.surface),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: isDark
+                          ? [
+                              AppColors.darkSurfaceVariant,
+                              AppColors.darkSurface,
+                            ]
+                          : mood == MoodType.productive
+                          ? const [Color(0xFFF0E9FF), Color(0xFFE4D8FF)]
+                          : mood == MoodType.happy
+                          ? const [Color(0xFFFFF7DC), Color(0xFFF0E8FF)]
+                          : const [Color(0xFFF0EAFF), Color(0xFFE6DDF8)],
+                    ),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isSelected
@@ -60,7 +73,9 @@ class MoodSelector extends StatelessWidget {
                       BoxShadow(
                         color: isSelected
                             ? mood.color.withAlpha(isDark ? 80 : 60)
-                            : (isDark ? Colors.transparent : AppColors.cardShadow),
+                            : (isDark
+                                  ? Colors.transparent
+                                  : AppColors.cardShadow),
                         blurRadius: isSelected ? 14 : 8,
                         offset: Offset(0, isSelected ? 4 : 2),
                       ),
@@ -69,16 +84,14 @@ class MoodSelector extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Emoji with animated scaling
+                      // Shared vector illustration with a gentle selected scale.
                       AnimatedScale(
                         scale: isSelected ? 1.2 : 1.0,
                         duration: const Duration(milliseconds: 200),
                         curve: Curves.easeOutBack,
-                        child: Text(
-                          mood.emoji,
-                          style: TextStyle(
-                            fontSize: isCompact ? 26 : 34,
-                          ),
+                        child: MoodIllustration(
+                          mood: mood,
+                          size: isCompact ? 32 : 44,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -90,12 +103,14 @@ class MoodSelector extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: isCompact ? 12 : 13,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           color: isSelected
                               ? (isDark ? mood.color : AppColors.textMain)
                               : (isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.textSecondary),
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.textSecondary),
                           letterSpacing: -0.2,
                         ),
                       ),

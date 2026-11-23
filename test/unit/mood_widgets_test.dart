@@ -4,6 +4,7 @@ import 'package:moodora/models/journal_entry.dart';
 import 'package:moodora/models/mood_stats.dart';
 import 'package:moodora/widgets/mood_chart.dart';
 import 'package:moodora/widgets/mood_selector.dart';
+import 'package:moodora/widgets/mood_illustration.dart';
 
 void main() {
   group('Mood Widgets Tests', () {
@@ -22,14 +23,12 @@ void main() {
         ),
       );
 
-      // Verify labels and emojis are shown
+      // Verify labels and the shared vector mood art are shown.
       expect(find.text('Happy'), findsOneWidget);
       expect(find.text('Neutral'), findsOneWidget);
       expect(find.text('Productive'), findsOneWidget);
 
-      expect(find.text('😊'), findsOneWidget);
-      expect(find.text('😐'), findsOneWidget);
-      expect(find.text('🚀'), findsOneWidget);
+      expect(find.byType(MoodIllustration), findsNWidgets(3));
 
       // Tap on Productive
       await tester.tap(find.text('Productive'));

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moodora/models/journal_entry.dart';
 import 'package:moodora/providers/journal_provider.dart';
 import 'package:moodora/screens/create_entry/create_entry_screen.dart';
+import 'package:moodora/widgets/mood_illustration.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -57,14 +58,12 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(buildTestScreen());
 
-      // Verify all 3 mood labels and emojis exist
+      // Verify all 3 mood labels and vector illustrations exist.
       expect(find.text('Happy'), findsOneWidget);
       expect(find.text('Neutral'), findsOneWidget);
       expect(find.text('Productive'), findsOneWidget);
 
-      expect(find.text('😊'), findsOneWidget);
-      expect(find.text('😐'), findsOneWidget);
-      expect(find.text('🚀'), findsOneWidget);
+      expect(find.byType(MoodIllustration), findsNWidgets(3));
 
       // Select Neutral
       await tester.tap(find.text('Neutral'));

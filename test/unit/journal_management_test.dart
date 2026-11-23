@@ -6,6 +6,7 @@ import 'package:moodora/providers/journal_provider.dart';
 import 'package:moodora/screens/create_entry/create_entry_screen.dart';
 import 'package:moodora/screens/entry_details/entry_details_screen.dart';
 import 'package:moodora/services/journal_service.dart';
+import 'package:moodora/widgets/mood_illustration.dart';
 import 'package:provider/provider.dart';
 
 // In-memory test service for isolating provider and CRUD operations
@@ -145,9 +146,9 @@ void main() {
       expect(find.text('Full Mindfulness Session'), findsOneWidget);
       expect(find.text('Completed 20 minutes of mindful breathing and deep relaxation.'), findsOneWidget);
 
-      // Selected mood, emoji & color label
+      // Selected mood, vector illustration & color label
       expect(find.text('Productive'), findsOneWidget);
-      expect(find.text('🚀'), findsOneWidget);
+      expect(find.byType(MoodIllustration), findsOneWidget);
       expect(find.text('Mood Color'), findsOneWidget);
 
       // Created date and time

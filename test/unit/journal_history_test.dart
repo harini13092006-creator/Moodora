@@ -7,6 +7,7 @@ import 'package:moodora/screens/entry_details/entry_details_screen.dart';
 import 'package:moodora/screens/journal_history/journal_history_screen.dart';
 import 'package:moodora/services/journal_service.dart';
 import 'package:moodora/widgets/journal_card.dart';
+import 'package:moodora/widgets/mood_illustration.dart';
 import 'package:moodora/widgets/search_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -249,13 +250,11 @@ void main() {
       // Verify JournalCards exist
       expect(find.byType(JournalCard), findsNWidgets(3));
 
-      // Verify card content: title, content preview, mood emoji
+      // Verify card content and shared mood illustrations.
       expect(find.text('Morning Yoga and Tea'), findsOneWidget);
       expect(find.text('Sprint Planning'), findsOneWidget);
       expect(find.text('Night Walk Under Stars'), findsOneWidget);
-      expect(find.text('😊'), findsWidgets);
-      expect(find.text('🚀'), findsWidgets);
-      expect(find.text('😐'), findsWidgets);
+      expect(find.byType(MoodIllustration), findsNWidgets(6));
     });
 
     testWidgets('Dynamic search updates feed and displays empty search message when no match',

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../core/constants/app_colors.dart';
 import '../core/utils/date_formatter.dart';
 import '../models/journal_entry.dart';
+import 'mood_illustration.dart';
 
 /// Minimal, aesthetic Material Design 3 Card rendering a summary of a single [JournalEntry].
 /// Contains:
@@ -83,25 +85,25 @@ class JournalCard extends StatelessWidget {
                             Flexible(
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color: isDark
                                       ? mood.color.withAlpha(30)
                                       : mood.containerColor,
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: mood.color
-                                        .withAlpha(isDark ? 90 : 130),
+                                    color: mood.color.withAlpha(
+                                      isDark ? 90 : 130,
+                                    ),
                                     width: 1,
                                   ),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(
-                                      mood.emoji,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
+                                    MoodIllustration(mood: mood, size: 20),
                                     const SizedBox(width: 6),
                                     Flexible(
                                       child: Text(
@@ -134,7 +136,9 @@ class JournalCard extends StatelessWidget {
                                 visualDensity: VisualDensity.compact,
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(
-                                    minWidth: 28, minHeight: 28),
+                                  minWidth: 28,
+                                  minHeight: 28,
+                                ),
                               ),
                             ],
                           ],

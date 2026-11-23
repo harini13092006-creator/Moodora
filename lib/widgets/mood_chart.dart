@@ -1,16 +1,15 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+
 import '../core/constants/app_colors.dart';
 import '../models/journal_entry.dart';
 import '../models/mood_stats.dart';
+import 'mood_illustration.dart';
 
 /// Reusable mood distribution chart using fl_chart.
 /// Visualizes actual calculated statistics across Happy, Neutral, and Productive moods.
 class MoodDistributionChart extends StatefulWidget {
-  const MoodDistributionChart({
-    super.key,
-    required this.stats,
-  });
+  const MoodDistributionChart({super.key, required this.stats});
 
   final MoodStats stats;
 
@@ -108,16 +107,10 @@ class _MoodDistributionChartState extends State<MoodDistributionChart> {
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
-                BoxShadow(
-                  color: mood.color.withAlpha(80),
-                  blurRadius: 6,
-                ),
+                BoxShadow(color: mood.color.withAlpha(80), blurRadius: 6),
               ],
             ),
-            child: Text(
-              mood.emoji,
-              style: const TextStyle(fontSize: 14),
-            ),
+            child: MoodIllustration(mood: mood, size: 22),
           ),
           badgePositionPercentageOffset: 1.15,
         ),
@@ -140,17 +133,16 @@ class _MoodDistributionChartState extends State<MoodDistributionChart> {
                   : stats.mostFrequentMood!.containerColor,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: stats.mostFrequentMood!.color.withAlpha(isDark ? 90 : 120),
+                color: stats.mostFrequentMood!.color.withAlpha(
+                  isDark ? 90 : 120,
+                ),
                 width: 1,
               ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  stats.mostFrequentMood!.emoji,
-                  style: const TextStyle(fontSize: 16),
-                ),
+                MoodIllustration(mood: stats.mostFrequentMood!, size: 24),
                 const SizedBox(width: 8),
                 Text(
                   'Dominant Mood: ${stats.mostFrequentMood!.label}',
@@ -205,8 +197,9 @@ class _MoodDistributionChartState extends State<MoodDistributionChart> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      color:
-                          isDark ? AppColors.darkTextMain : AppColors.textMain,
+                      color: isDark
+                          ? AppColors.darkTextMain
+                          : AppColors.textMain,
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -295,10 +288,7 @@ class _MoodDistributionChartState extends State<MoodDistributionChart> {
                   ),
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  mood.emoji,
-                  style: const TextStyle(fontSize: 12),
-                ),
+                MoodIllustration(mood: mood, size: 16),
                 const SizedBox(width: 3),
                 Text(
                   mood.label,

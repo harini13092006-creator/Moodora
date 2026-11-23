@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/utils/date_formatter.dart';
@@ -8,6 +9,7 @@ import '../../providers/journal_provider.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/journal_card.dart';
+import '../../widgets/mood_illustration.dart';
 import '../../widgets/search_bar.dart';
 import '../create_entry/create_entry_screen.dart';
 import '../entry_details/entry_details_screen.dart';
@@ -36,7 +38,8 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
   /// - November 12, 2026
   /// - November 11, 2026
   Map<String, List<JournalEntry>> _groupEntriesByDate(
-      List<JournalEntry> entries) {
+    List<JournalEntry> entries,
+  ) {
     final grouped = <String, List<JournalEntry>>{};
 
     for (final entry in entries) {
@@ -49,7 +52,9 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
 
   /// Opens Flutter DatePicker for selecting a specific calendar date
   Future<void> _selectSpecificDate(
-      BuildContext context, JournalProvider provider) async {
+    BuildContext context,
+    JournalProvider provider,
+  ) async {
     final now = DateTime.now();
     final initialDate = provider.selectedDateFilter ?? now;
 
@@ -61,10 +66,8 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: AppColors.primary,
-                  onPrimary: Colors.white,
-                ),
+            colorScheme: Theme.of(context).colorScheme
+                .copyWith(primary: AppColors.primary, onPrimary: Colors.white),
           ),
           child: child!,
         );
@@ -78,18 +81,17 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
 
   /// Opens Flutter DateRangePicker for selecting start and end dates
   Future<void> _selectDateRange(
-      BuildContext context, JournalProvider provider) async {
+    BuildContext context,
+    JournalProvider provider,
+  ) async {
     final now = DateTime.now();
     final initialRange =
         (provider.startDateFilter != null && provider.endDateFilter != null)
-            ? DateTimeRange(
-                start: provider.startDateFilter!,
-                end: provider.endDateFilter!,
-              )
-            : DateTimeRange(
-                start: now.subtract(const Duration(days: 7)),
-                end: now,
-              );
+        ? DateTimeRange(
+            start: provider.startDateFilter!,
+            end: provider.endDateFilter!,
+          )
+        : DateTimeRange(start: now.subtract(const Duration(days: 7)), end: now);
 
     final picked = await showDateRangePicker(
       context: context,
@@ -99,10 +101,8 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  primary: AppColors.primary,
-                  onPrimary: Colors.white,
-                ),
+            colorScheme: Theme.of(context).colorScheme
+                .copyWith(primary: AppColors.primary, onPrimary: Colors.white),
           ),
           child: child!,
         );
@@ -161,7 +161,9 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 6.0),
+                  horizontal: 16.0,
+                  vertical: 6.0,
+                ),
                 child: Row(
                   children: [
                     // Active Date Filter Pill (with instant clear button)
@@ -255,8 +257,9 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
                       label: const Text(AppStrings.filterAll),
                       selected: activeMood == null,
                       onSelected: (_) => provider.filterByMood(null),
-                      backgroundColor:
-                          isDark ? AppColors.darkSurface : AppColors.surface,
+                      backgroundColor: isDark
+                          ? AppColors.darkSurface
+                          : AppColors.surface,
                       selectedColor: isDark
                           ? AppColors.darkSurfaceVariant
                           : AppColors.secondary,
@@ -268,15 +271,15 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
                         color: activeMood == null
                             ? AppColors.primary
                             : (isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.textSecondary),
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.textSecondary),
                       ),
                       side: BorderSide(
                         color: activeMood == null
                             ? AppColors.primary
                             : (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.border),
+                                  ? AppColors.darkBorder
+                                  : AppColors.border),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -287,10 +290,7 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: FilterChip(
-                          avatar: Text(
-                            mood.emoji,
-                            style: const TextStyle(fontSize: 13),
-                          ),
+                          avatar: MoodIllustration(mood: mood, size: 18),
                           label: Text(mood.label),
                           selected: isSelected,
                           backgroundColor: isDark
@@ -307,15 +307,15 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
                             color: isSelected
                                 ? (isDark ? mood.color : AppColors.textMain)
                                 : (isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.textSecondary),
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.textSecondary),
                           ),
                           side: BorderSide(
                             color: isSelected
                                 ? mood.color
                                 : (isDark
-                                    ? AppColors.darkBorder
-                                    : AppColors.border),
+                                      ? AppColors.darkBorder
+                                      : AppColors.border),
                           ),
                           onSelected: (_) => provider.filterByMood(mood),
                         ),
@@ -352,108 +352,112 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2.5),
                       )
                     : entries.isEmpty
-                        ? _buildEmptyState(context, provider)
-                        : ListView.builder(
-                            padding: const EdgeInsets.only(bottom: 96, top: 4),
-                            itemCount: grouped.keys.length,
-                            itemBuilder: (context, index) {
-                              final header = grouped.keys.elementAt(index);
-                              final groupEntries = grouped[header]!;
+                    ? _buildEmptyState(context, provider)
+                    : ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 96, top: 4),
+                        itemCount: grouped.keys.length,
+                        itemBuilder: (context, index) {
+                          final header = grouped.keys.elementAt(index);
+                          final groupEntries = grouped[header]!;
 
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Date Header (Today, Yesterday, November 12, 2026, etc.)
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 16, 16, 8),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          header,
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w700,
-                                            letterSpacing: 0.4,
-                                            color: isDark
-                                                ? AppColors.darkTextMain
-                                                : AppColors.textMain,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: isDark
-                                                ? AppColors.darkSurfaceVariant
-                                                : AppColors.secondary,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Text(
-                                            '${groupEntries.length}',
-                                            style: const TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Date Header (Today, Yesterday, November 12, 2026, etc.)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  20,
+                                  16,
+                                  16,
+                                  8,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      header,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.4,
+                                        color: isDark
+                                            ? AppColors.darkTextMain
+                                            : AppColors.textMain,
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isDark
+                                            ? AppColors.darkSurfaceVariant
+                                            : AppColors.secondary,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                        '${groupEntries.length}',
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
 
-                                  // Cards under this Date Header
-                                  ...groupEntries.map((entry) {
-                                    return JournalCard(
-                                      entry: entry,
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (_) => EntryDetailsScreen(
-                                                entry: entry),
-                                          ),
-                                        );
-                                      },
-                                      onDelete: () async {
-                                        final confirmed = await showDialog<bool>(
-                                          context: context,
-                                          builder: (ctx) => AlertDialog(
-                                            title:
-                                                const Text('Delete Reflection'),
-                                            content: const Text(
-                                                'Are you sure you want to delete this reflection? This action cannot be reversed.'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(ctx, false),
-                                                child: const Text('Cancel'),
-                                              ),
-                                              FilledButton(
-                                                style: FilledButton.styleFrom(
-                                                  backgroundColor:
-                                                      Colors.red.shade400,
-                                                ),
-                                                onPressed: () =>
-                                                    Navigator.pop(ctx, true),
-                                                child: const Text('Delete'),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-
-                                        if (confirmed == true &&
-                                            entry.id != null) {
-                                          await provider.deleteEntry(entry.id!);
-                                        }
-                                      },
+                              // Cards under this Date Header
+                              ...groupEntries.map((entry) {
+                                return JournalCard(
+                                  entry: entry,
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            EntryDetailsScreen(entry: entry),
+                                      ),
                                     );
-                                  }),
-                                ],
-                              );
-                            },
-                          ),
+                                  },
+                                  onDelete: () async {
+                                    final confirmed = await showDialog<bool>(
+                                      context: context,
+                                      builder: (ctx) => AlertDialog(
+                                        title: const Text('Delete Reflection'),
+                                        content: const Text(
+                                          'Are you sure you want to delete this reflection? This action cannot be reversed.',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(ctx, false),
+                                            child: const Text('Cancel'),
+                                          ),
+                                          FilledButton(
+                                            style: FilledButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.red.shade400,
+                                            ),
+                                            onPressed: () =>
+                                                Navigator.pop(ctx, true),
+                                            child: const Text('Delete'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+
+                                    if (confirmed == true && entry.id != null) {
+                                      await provider.deleteEntry(entry.id!);
+                                    }
+                                  },
+                                );
+                              }),
+                            ],
+                          );
+                        },
+                      ),
               ),
             ],
           );
@@ -474,13 +478,12 @@ class _JournalHistoryScreenState extends State<JournalHistoryScreen> {
       return EmptyState(
         icon: Icons.auto_stories_outlined,
         title: 'No journal entries yet',
-        message:
-            'Your diary is waiting for your thoughts. Begin your mindfulness journey by recording your first reflection.',
+        message: 'Your diary is waiting for your thoughts. Begin your mindfulness journey by recording your first reflection.',
         actionLabel: 'Write First Entry',
         onActionPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const CreateEntryScreen()),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const CreateEntryScreen()));
         },
       );
     }

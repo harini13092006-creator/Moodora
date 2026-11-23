@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
 import '../main_navigation/main_navigation_screen.dart';
@@ -31,19 +32,19 @@ class OnboardingScreen extends StatelessWidget {
 
     final highlights = [
       {
-        'emoji': '☀️',
+        'icon': Icons.wb_sunny_rounded,
         'title': 'Track Daily Moods',
         'desc': 'Log how you feel with soft, expressive mood selectors.',
         'color': AppColors.moodHappy,
       },
       {
-        'emoji': '📖',
+        'icon': Icons.auto_stories_rounded,
         'title': 'A Private Sanctuary',
         'desc': 'Safe and personal reflections stored locally on your device.',
         'color': AppColors.moodPeaceful,
       },
       {
-        'emoji': '🌱',
+        'icon': Icons.spa_rounded,
         'title': 'Mindful Growth',
         'desc': 'Observe peaceful patterns and celebrate your productive days.',
         'color': AppColors.moodProductive,
@@ -70,11 +71,10 @@ class OnboardingScreen extends StatelessWidget {
                       : AppColors.secondary,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Center(
-                  child: Text(
-                    '🌿',
-                    style: TextStyle(fontSize: 22),
-                  ),
+                child: const Icon(
+                  Icons.auto_awesome_rounded,
+                  color: AppColors.primary,
+                  size: 22,
                 ),
               ),
               const SizedBox(height: 24),
@@ -109,7 +109,8 @@ class OnboardingScreen extends StatelessWidget {
                 child: ListView.separated(
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: highlights.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 16),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 16),
                   itemBuilder: (context, index) {
                     final item = highlights[index];
                     return Container(
@@ -141,13 +142,16 @@ class OnboardingScreen extends StatelessWidget {
                             width: 46,
                             height: 46,
                             decoration: BoxDecoration(
-                              color: (item['color'] as Color).withAlpha(isDark ? 40 : 50),
+                              color: (item['color'] as Color).withAlpha(
+                                isDark ? 40 : 50,
+                              ),
                               borderRadius: BorderRadius.circular(14),
                             ),
                             child: Center(
-                              child: Text(
-                                item['emoji'] as String,
-                                style: const TextStyle(fontSize: 22),
+                              child: Icon(
+                                item['icon'] as IconData,
+                                color: item['color'] as Color,
+                                size: 22,
                               ),
                             ),
                           ),
