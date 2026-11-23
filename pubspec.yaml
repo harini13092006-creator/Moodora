@@ -80,6 +80,12 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/fonts/
+
+  fonts:
+    - family: MoodoraNotoEmoji
+      fonts:
+        - asset: assets/fonts/NotoColorEmoji.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

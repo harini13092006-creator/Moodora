@@ -40,13 +40,15 @@ class DatabaseHelper {
 
     if (kIsWeb) {
       databaseFactory = databaseFactoryFfiWeb;
-    } else {
+    } else if (defaultTargetPlatform == TargetPlatform.windows ||
+        defaultTargetPlatform == TargetPlatform.linux ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
       try {
-        // Desktop platforms (Windows, Linux, macOS) and test runners
+        // Desktop platforms use Dart FFI; mobile retains sqflite's native factory.
         sqfliteFfiInit();
         databaseFactory = databaseFactoryFfi;
       } catch (_) {
-        // Native mobile platforms (Android, iOS) will use the default native factory
+        // Keep the platform default if desktop FFI is unavailable.
       }
     }
     _factoryInitialized = true;
